@@ -1,6 +1,9 @@
 ## Ignore Visual Studio temporary files, build results, and other things.
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# mods generated
+mods/
+
 # User-specific files
 *.rsuser
 *.suo
