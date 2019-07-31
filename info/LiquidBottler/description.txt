@@ -1,0 +1,4 @@
+﻿A piped LiquidBottler inspired by [url=steamcommunity.com/sharedfiles/filedetails/?id=1714560329]Liquid Bottler[/url].
+uses CanisterFiller's animation instead.
+
+research [b]Improved-Plumbing[/b] must be finished to unlock this building.
