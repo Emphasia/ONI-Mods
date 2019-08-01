@@ -1,4 +1,15 @@
 ﻿A piped LiquidBottler inspired by [url=steamcommunity.com/sharedfiles/filedetails/?id=1714560329]Liquid Bottler[/url].
 uses CanisterFiller's animation instead.
+[list]
+    [*]Allow Duplicants to fetch bottled liquids from pipe for delivery to buildings (like Pitcher-Pump).
+    [*]research [b]Improved-Plumbing[/b] must be finished to unlock this building.
+    [*][b]won't[/b] produce polluted-oxygen when connected to polluted-water (like Liquid-Reservoir).
+[/list]
 
-research [b]Improved-Plumbing[/b] must be finished to unlock this building.
+
+一个液体装瓶器。
+[list]
+    [*]使得复制人可以从此处获取瓶装水以供应其他建筑（≈手压泵）
+    [*]必须完成研究[b]改良水管[/b]来解锁此建筑
+    [*]供水为污染水时[b]不会[/b]释放污染氧（≈储液库，但瓶装污染水离开建筑后不受控制）
+[/list]

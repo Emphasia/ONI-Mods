@@ -28,6 +28,7 @@ public class LiquidBottlerConfig : IBuildingConfig
     public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
     {
         Storage storage = BuildingTemplates.CreateDefaultStorage(go, true);
+        storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
         storage.showDescriptor = true;
         storage.capacityKg = 350f;
         storage.allowItemRemoval = true;
