@@ -10,6 +10,7 @@ public class LiquidBottlerConfig : IBuildingConfig
         int width = 3;
         int height = 2;
         string anim = "gas_bottler_kanim";
+        //string anim = "liquidbottler_kanim";
         int hitpoints = 30;
         float construction_time = 30f;
         float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER4;
@@ -21,12 +22,15 @@ public class LiquidBottlerConfig : IBuildingConfig
         buildingDef.UtilityInputOffset = new CellOffset(0, 0);
         buildingDef.ViewMode = OverlayModes.LiquidConduits.ID;
         buildingDef.Floodable = false;
+        buildingDef.Entombable = true;
         buildingDef.AudioCategory = "HollowMetal";
+        buildingDef.DefaultAnimState = "on";
         return buildingDef;
     }
 
     public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
     {
+        //Prioritizable.AddRef(go);
         Storage storage = go.AddOrGet<Storage>();
         storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
         storage.showDescriptor = true;
@@ -35,6 +39,9 @@ public class LiquidBottlerConfig : IBuildingConfig
         storage.allowItemRemoval = true;
         storage.showInUI = true;
         go.AddOrGet<DropAllWorkable>();
+        LiquidBottler liquidBottler = go.AddOrGet<LiquidBottler>();
+        liquidBottler.storage = storage;
+        liquidBottler.workTime = 9f;
         ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
         conduitConsumer.storage = storage;
         conduitConsumer.conduitType = ConduitType.Liquid;
