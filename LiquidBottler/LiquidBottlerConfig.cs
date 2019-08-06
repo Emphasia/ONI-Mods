@@ -27,19 +27,21 @@ public class LiquidBottlerConfig : IBuildingConfig
 
     public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
     {
-        Storage storage = BuildingTemplates.CreateDefaultStorage(go, true);
+        Storage storage = go.AddOrGet<Storage>();
         storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
         storage.showDescriptor = true;
+        storage.storageFilters = STORAGEFILTERS.LIQUIDS;
         storage.capacityKg = 350f;
         storage.allowItemRemoval = true;
         storage.showInUI = true;
         go.AddOrGet<DropAllWorkable>();
         ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
+        conduitConsumer.storage = storage;
         conduitConsumer.conduitType = ConduitType.Liquid;
         conduitConsumer.ignoreMinMassCheck = true;
-        conduitConsumer.forceAlwaysSatisfied = true;
-        conduitConsumer.alwaysConsume = true;
-        conduitConsumer.capacityKG = 1000f;
+        //conduitConsumer.forceAlwaysSatisfied = true;
+        //conduitConsumer.alwaysConsume = true;
+        conduitConsumer.capacityKG = storage.capacityKg;
         conduitConsumer.keepZeroMassObject = false;
     }
 
