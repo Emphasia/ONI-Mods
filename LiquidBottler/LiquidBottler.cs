@@ -7,12 +7,16 @@ public class LiquidBottler : Workable
 
     private LiquidBottler.Controller.Instance smi;
 
+    private bool dropWhenFull = false;
+
     protected override void OnSpawn()
     {
         base.OnSpawn();
+        base.Subscribe((int)GameHashes.RefreshUserMenu, new Action<object>(this.OnRefreshUserMenuDelegate));
+        base.Subscribe((int)GameHashes.OnStorageChange, new Action<object>(this.OnStorageChangedDelegate));
         this.smi = new LiquidBottler.Controller.Instance(this);
         this.smi.StartSM();
-        this.UpdateStoredItemState();
+        //this.UpdateStoredItemState();
     }
 
     protected override void OnCleanUp()
@@ -32,6 +36,32 @@ public class LiquidBottler : Workable
             if (gameObject != null)
             {
                 gameObject.Trigger((int)GameHashes.OnStorageInteracted, this.storage);
+            }
+        }
+    }
+
+    public void OnRefreshUserMenuDelegate(object _)
+    {
+        string textName = this.dropWhenFull ? "Disable Auto-Drop" : "Enable Auto-Drop";
+        string textTooltip = this.dropWhenFull ? "Stop this building from filling when full" : "Allow this building to drop bottles once full";
+        KIconButtonMenu.ButtonInfo button = new KIconButtonMenu.ButtonInfo("action_building_disabled", textName, new System.Action(this.OnChangeDropWhenFull), global::Action.NumActions, null, null, null, textTooltip, true);
+        Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
+    }
+
+    private void OnChangeDropWhenFull()
+    {
+        this.dropWhenFull = !this.dropWhenFull;
+        //this.OnStorageChangedDelegate(this);
+        smi.GoTo(smi.sm.GetDefaultState());
+    }
+
+    public void OnStorageChangedDelegate(object _)
+    {
+        if (this.dropWhenFull)
+        {
+            if (this.storage.IsFull())
+            {
+                base.GetComponent<Storage>().DropAll(false, false, default, true);
             }
         }
     }
@@ -70,9 +100,7 @@ public class LiquidBottler : Workable
 
         public new class Instance : GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler, object>.GameInstance
         {
-            public Instance(LiquidBottler master) : base(master)
-            {
-            }
+            public Instance(LiquidBottler master) : base(master) { }
         }
     }
 }
