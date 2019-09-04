@@ -30,7 +30,7 @@ public class LiquidBottlerConfig : IBuildingConfig
 
     public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
     {
-        //Prioritizable.AddRef(go);
+        Prioritizable.AddRef(go);
         Storage storage = go.AddOrGet<Storage>();
         storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
         storage.showDescriptor = true;

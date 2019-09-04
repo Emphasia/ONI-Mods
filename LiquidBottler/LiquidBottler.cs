@@ -7,16 +7,16 @@ public class LiquidBottler : Workable
 
     private LiquidBottler.Controller.Instance smi;
 
-    private bool dropWhenFull = false;
+    public bool dropWhenFull = false;
 
     protected override void OnSpawn()
     {
         base.OnSpawn();
-        base.Subscribe((int)GameHashes.RefreshUserMenu, new Action<object>(this.OnRefreshUserMenuDelegate));
-        base.Subscribe((int)GameHashes.OnStorageChange, new Action<object>(this.OnStorageChangedDelegate));
+        storedAmount = storage.MassStored();
+        base.Subscribe((int)GameHashes.RefreshUserMenu, new Action<object>(OnRefreshUserMenuDelegate));
         this.smi = new LiquidBottler.Controller.Instance(this);
         this.smi.StartSM();
-        //this.UpdateStoredItemState();
+        UpdateStoredItemState();
     }
 
     protected override void OnCleanUp()
@@ -30,73 +30,103 @@ public class LiquidBottler : Workable
 
     private void UpdateStoredItemState()
     {
-        //this.storage.allowItemRemoval = (this.smi != null && this.smi.GetCurrentState() == this.smi.sm.ready);
-        foreach (GameObject gameObject in this.storage.items)
+        foreach (GameObject go in storage.items)
         {
-            if (gameObject != null)
+            if (go != null)
             {
-                gameObject.Trigger((int)GameHashes.OnStorageInteracted, this.storage);
+                go.Trigger((int)GameHashes.OnStorageInteracted, storage);
             }
         }
     }
 
     public void OnRefreshUserMenuDelegate(object _)
     {
-        string textName = this.dropWhenFull ? "Disable Auto-Drop" : "Enable Auto-Drop";
-        string textTooltip = this.dropWhenFull ? "Stop this building from filling when full" : "Allow this building to drop bottles once full";
-        KIconButtonMenu.ButtonInfo button = new KIconButtonMenu.ButtonInfo("action_building_disabled", textName, new System.Action(this.OnChangeDropWhenFull), global::Action.NumActions, null, null, null, textTooltip, true);
-        Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
-    }
-
-    private void OnChangeDropWhenFull()
-    {
-        this.dropWhenFull = !this.dropWhenFull;
-        //this.OnStorageChangedDelegate(this);
-        smi.GoTo(smi.sm.GetDefaultState());
-    }
-
-    public void OnStorageChangedDelegate(object _)
-    {
-        if (this.dropWhenFull)
-        {
-            if (this.storage.IsFull())
-            {
-                base.GetComponent<Storage>().DropAll(false, false, default, true);
-            }
-        }
-    }
-
-    private class Controller : GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler>
-    {
-        public override void InitializeStates(out StateMachine.BaseState default_state)
-        {
-            default_state = this.empty;
-            this.empty.PlayAnim("off").EventTransition(GameHashes.OnStorageChange, this.filling, (LiquidBottler.Controller.Instance smi) => smi.master.storage.IsFull());
-            this.filling.PlayAnim("working").OnAnimQueueComplete(this.ready);
-            this.ready.EventTransition(GameHashes.OnStorageChange, this.pickup, (LiquidBottler.Controller.Instance smi) => !smi.master.storage.IsFull())
-                .Enter(delegate (LiquidBottler.Controller.Instance smi)
+        Game.Instance.userMenu.AddButton(gameObject, new KIconButtonMenu.ButtonInfo(
+            iconName: "action_building_disabled",
+            text: dropWhenFull ? "Disable Auto-Drop" : "Enable Auto-Drop",
+            tooltipText: dropWhenFull ? "Stop this building from filling when full" : "Allow this building to drop bottles once full",
+            on_click: new System.Action(() =>
                 {
-                    //smi.master.storage.allowItemRemoval = true;
-                    foreach (GameObject go in smi.master.storage.items)
+                    dropWhenFull = !dropWhenFull;
+                    smi.GoTo(smi.sm.GetDefaultState());
+                })
+            )
+        );
+    }
+
+    protected float storedAmount;
+    public enum StorageChangeType { increased, decreased, unchanged };
+
+    public StorageChangeType OnStorageChangedDelegate()
+    {
+        StorageChangeType storageChangeType;
+        if (storage.MassStored() > storedAmount)
+            storageChangeType = StorageChangeType.increased;
+        else if (storage.MassStored() < storedAmount)
+            storageChangeType = StorageChangeType.decreased;
+        else storageChangeType = StorageChangeType.unchanged;
+
+        storedAmount = storage.MassStored();
+        return storageChangeType;
+    }
+
+    private class Controller : GameStateMachine<Controller, Controller.Instance, LiquidBottler>
+    {
+        public State idle, empty, filling, full, picking;
+
+        public override void InitializeStates(out BaseState default_state)
+        {
+            default_state = idle;
+            idle
+                //.ToggleStatusItem("idle", "idle")
+                //.PlayAnim("on")
+                .EventHandler(GameHashes.OnStorageChange, smi => {
+                    switch (smi.master.OnStorageChangedDelegate())
                     {
-                        go.Trigger((int)GameHashes.OnStorageInteracted, smi.master.storage);
+                        case StorageChangeType.increased:
+                            smi.GoTo(filling); break;
+                        case StorageChangeType.decreased:
+                            smi.GoTo(picking); break;
                     }
                 })
-                .Exit(delegate (LiquidBottler.Controller.Instance smi)
-                {
-                    //smi.master.storage.allowItemRemoval = false;
-                    foreach (GameObject go in smi.master.storage.items)
+                //.EventTransition(GameHashes.OnStorageChange, filling, smi => smi.master.storageChangeType == StorageChangeType.increased)
+                //.EventTransition(GameHashes.OnStorageChange, picking, smi => smi.master.storageChangeType == StorageChangeType.decreased)
+                .EnterTransition(full, smi => smi.master.storage.IsFull())
+                .EnterTransition(empty, smi => smi.master.storage.IsEmpty());
+            filling
+                //.ToggleStatusItem("filling", "filling")
+                //.PlayAnim("working")
+                .OnAnimQueueComplete(idle);
+                //.ScheduleGoTo(2f, idle);
+            full
+                //.ToggleStatusItem("full", "full")
+                //.EventTransition(GameHashes.OnStorageChange, picking, smi => smi.master.storageChangeType == StorageChangeType.decreased)
+                .EventHandler(GameHashes.OnStorageChange, smi => {
+                    switch (smi.master.OnStorageChangedDelegate())
                     {
-                        go.Trigger((int)GameHashes.OnStorageInteracted, smi.master.storage);
+                        case StorageChangeType.decreased:
+                            smi.GoTo(picking); break;
                     }
+                })
+                .EnterTransition(idle, smi => {
+                    if (smi.master.dropWhenFull)
+                    {
+                        smi.master.storage.DropAll(false, false, default, true);
+                        smi.master.storedAmount = 0;
+                        return true;
+                    }
+                    return false;
                 });
-            this.pickup.PlayAnim("pick_up").OnAnimQueueComplete(this.empty);
+            picking
+                //.ToggleStatusItem("picking", "picking")
+                //.PlayAnim("pick_up")
+                .OnAnimQueueComplete(idle);
+                //.ScheduleGoTo(1f, idle);
+            empty
+                //.ToggleStatusItem("empty", "empty")
+                //.PlayAnim("off")
+                .EventTransition(GameHashes.OnStorageChange, filling, smi => !smi.master.storage.IsEmpty());
         }
-
-        public GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler, object>.State empty;
-        public GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler, object>.State filling;
-        public GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler, object>.State ready;
-        public GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler, object>.State pickup;
 
         public new class Instance : GameStateMachine<LiquidBottler.Controller, LiquidBottler.Controller.Instance, LiquidBottler, object>.GameInstance
         {
