@@ -43,10 +43,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>
@@ -57,8 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LiquidBottler.cs" />
-    <Compile Include="LiquidBottlerPatch.cs" />
     <Compile Include="LiquidBottlerConfig.cs" />
+    <Compile Include="LiquidBottlerPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -66,6 +62,7 @@
     <PostBuildEvent>
 echo F | xcopy /Y /S /R /Q "$(TargetName).dll" "$(SolutionDir)releases\$(TargetName)\$(TargetName).dll"
 if exist "$(ProjectDir)assets" (xcopy /Y /R /I /E /Q  "$(ProjectDir)assets" "$(SolutionDir)releases\$(TargetName)\assets")
+if exist "$(ProjectDir)translations" (xcopy /Y /R /I /E /Q  "$(ProjectDir)translations" "$(SolutionDir)releases\$(TargetName)\translations")
 if exist "$(ProjectDir)Config.json" (echo F | xcopy /Y /S /R /Q "$(ProjectDir)Config.json" "$(SolutionDir)releases\$(TargetName)\Config.json")
 if exist "$(ProjectDir)info" (xcopy /Y /R /I /E /Q  "$(ProjectDir)info" "$(SolutionDir)releases\$(TargetName)")
 xcopy /Y /R /I /E /Q "$(SolutionDir)releases\$(TargetName)" "C:%HOMEPATH%\Documents\Klei\OxygenNotIncluded\mods\dev\$(TargetName)"

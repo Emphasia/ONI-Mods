@@ -45,9 +45,9 @@ namespace LiquidBottler
         public void OnRefreshUserMenuDelegate(object _)
         {
             Game.Instance.userMenu.AddButton(gameObject, new KIconButtonMenu.ButtonInfo(
-                iconName: "action_building_disabled",
-                text: dropWhenFull ? "Disable Auto-Drop" : "Enable Auto-Drop",
-                tooltipText: dropWhenFull ? "Stop this building from filling when full" : "Allow this building to drop bottles once full",
+                iconName: "action_bottler_delivery",
+                text: dropWhenFull ? Strings.Get("STRINGS.UI.USERMENUACTIONS.AUTODROP.NAME_OFF") : Strings.Get("STRINGS.UI.USERMENUACTIONS.AUTODROP.NAME"),
+                tooltipText: dropWhenFull ? Strings.Get("STRINGS.UI.USERMENUACTIONS.AUTODROP.TOOLTIP_OFF") : Strings.Get("STRINGS.UI.USERMENUACTIONS.AUTODROP.TOOLTIP"),
                 on_click: new System.Action(() =>
                     {
                         dropWhenFull = !dropWhenFull;
@@ -75,7 +75,9 @@ namespace LiquidBottler
 
         private class Controller : GameStateMachine<Controller, Controller.Instance, LiquidBottler>
         {
+#pragma warning disable 0649
             public State idle, empty, filling, full, picking;
+#pragma warning restore 0649
 
             public override void InitializeStates(out BaseState default_state)
             {

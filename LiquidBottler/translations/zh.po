@@ -1,0 +1,40 @@
+msgid ""
+msgstr ""
+"Application: Oxygen Not Included"
+"POT Version: 2.0"
+
+#. STRINGS.BUILDINGS.PREFABS.LIQUIDBOTTLER.NAME
+msgctxt "STRINGS.BUILDINGS.PREFABS.LIQUIDBOTTLER.NAME"
+msgid "Liquid Bottle Filler"
+msgstr "液体装瓶器"
+
+#. STRINGS.BUILDINGS.PREFABS.LIQUIDBOTTLER.DESC
+msgctxt "STRINGS.BUILDINGS.PREFABS.LIQUIDBOTTLER.DESC"
+msgid "Allow Duplicants to fetch bottled liquids for delivery to buildings."
+msgstr "使得复制人可以从此处获取瓶装水以供应其他建筑."
+
+#. STRINGS.BUILDINGS.PREFABS.LIQUIDBOTTLER.EFFECT
+msgctxt "STRINGS.BUILDINGS.PREFABS.LIQUIDBOTTLER.EFFECT"
+msgid "Automatically stores piped <link=\"ELEMENTSLIQUID\">Liquid</link> into bottles for manual transport."
+msgstr "自动将管道中的<link=\"ELEMENTSLIQUID\">液体</link>装入瓶中以供复制人取用."
+
+#. STRINGS.UI.USERMENUACTIONS.AUTODROP.NAME
+msgctxt "STRINGS.UI.USERMENUACTIONS.AUTODROP.NAME"
+msgid "Enable Auto-Drop"
+msgstr "启用自动装瓶"
+
+#. STRINGS.UI.USERMENUACTIONS.AUTODROP.NAME_OFF
+msgctxt "STRINGS.UI.USERMENUACTIONS.AUTODROP.NAME_OFF"
+msgid "Disable Auto-Drop"
+msgstr "禁用自动装瓶"
+
+#. STRINGS.UI.USERMENUACTIONS.AUTODROP.TOOLTIP
+msgctxt "STRINGS.UI.USERMENUACTIONS.AUTODROP.TOOLTIP"
+msgid "Allow this building to drop bottles once full"
+msgstr "启用后，若装满则弹出并开始装下一瓶"
+
+#. STRINGS.UI.USERMENUACTIONS.AUTODROP.TOOLTIP_OFF
+msgctxt "STRINGS.UI.USERMENUACTIONS.AUTODROP.TOOLTIP_OFF"
+msgid "Stop this building from filling when full"
+msgstr "禁用后，若装满则待机等待复制人取用"
+
