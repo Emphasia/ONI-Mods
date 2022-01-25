@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+
+  <PropertyGroup>
+    <Product>Emphasia.ONIMods</Product>
+    <Authors>Emphasia</Authors>
+    <Copyright>Copyright © Emphasia 2022</Copyright>
+    <PackageProjectUrl>https://github.com/Emphasia/ONI-Mods</PackageProjectUrl>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <APIVersion>2</APIVersion>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <GameDir>D:\Steam\steamapps\common\OxygenNotIncluded</GameDir>
+    <!-- <LibDir>$(GameDir)\OxygenNotIncluded_Data\Managed</LibDir> -->
+    <LibDir>$(SolutionDir)lib</LibDir>
+    <RelDir>$(SolutionDir)releases</RelDir>
+    <ModDir>$(UserProfile)\Documents\Klei\OxygenNotIncluded\mods\dev</ModDir>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="0Harmony" HintPath="$(LibDir)\0Harmony.dll" />
+    <Reference Include="Assembly-CSharp" HintPath="$(LibDir)\Assembly-CSharp.dll" />
+    <Reference Include="Assembly-CSharp-firstpass" HintPath="$(LibDir)\Assembly-CSharp-firstpass.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(LibDir)\Newtonsoft.Json.dll" />
+    <Reference Include="UnityEngine" HintPath="$(LibDir)\UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(LibDir)\UnityEngine.CoreModule.dll" />
+    <Reference Include="UnityEngine.UI" HintPath="$(LibDir)\UnityEngine.UI.dll" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(LibDir)\UnityEngine.UIModule.dll" />
+  </ItemGroup>
+  
+  <ItemDefinitionGroup>
+    <Reference Private="False" />
+    <ProjectReference Private="False" />
+  </ItemDefinitionGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+</Project>

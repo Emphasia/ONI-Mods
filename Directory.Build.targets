@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  
+  <PropertyGroup>
+    <RelTargetDir>$(RelDir)\$(TargetName)</RelTargetDir>
+  </PropertyGroup>
+
+  <Target Name="WriteModDescFile" AfterTargets="Build">
+    <PropertyGroup>
+      <ModDescFile>$(ProjectDir)info\mod.yaml</ModDescFile>
+      <ModDescFileContent>
+title: "$(ModName)"
+description: "$(ModDesc)"
+staticID: "$(ModID)"
+      </ModDescFileContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(ModDescFile)" Overwrite="true" Lines="$(ModDescFileContent)"/>
+  </Target>
+  <Target Name="WriteModInfoFile" AfterTargets="Build">
+    <PropertyGroup>
+      <ModInfoFile>$(ProjectDir)info\mod_info.yaml</ModInfoFile>
+      <ModInfoFileContent>
+supportedContent: $(SupportedContent)
+minimumSupportedBuild: $(minimumSupportedBuild)
+APIVersion: $(APIVersion)
+version: "$(ModVersion)"
+      </ModInfoFileContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(ModInfoFile)" Overwrite="true" Lines="$(ModInfoFileContent)"/>
+  </Target>
+
+  <Target Name="CopyRelFiles" AfterTargets="Build">
+    <RemoveDir Directories="$(RelTargetDir)" />
+    <ItemGroup>
+      <DllFiles Include="$(TargetDir)*.dll" />
+      <AssetFiles Include="$(ProjectDir)assets\*" />
+      <TranslationFiles Include="$(ProjectDir)translations\*" />
+      <ConfigFiles Include="$(ProjectDir)*.json" />
+      <InfoFiles Include="$(ProjectDir)info\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DllFiles)" DestinationFolder="$(RelTargetDir)" />
+    <Copy SourceFiles="@(AssetFiles)" DestinationFolder="$(RelTargetDir)\assets" />
+    <Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(RelTargetDir)\translations" />
+    <Copy SourceFiles="@(ConfigFiles)" DestinationFolder="$(RelTargetDir)" />
+    <Copy SourceFiles="@(InfoFiles)" DestinationFolder="$(RelTargetDir)" />
+    
+    <ItemGroup>
+      <ModFiles Include="$(RelTargetDir)\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ModFiles)" DestinationFiles="@(ModFiles->'$(ModDir)\$(TargetName)\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+  
+</Project>
